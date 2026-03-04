@@ -2,15 +2,99 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Job Tracker</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Job Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 { text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        select, input[type=text] { padding: 5px; }
+        button { padding: 5px 10px; margin-left: 5px; }
+    </style>
 </head>
 <body>
-    <h1>My Job Tracker</h1>
-    <p>Welcome to my job management site!</p>
-    <button id="showDate">Show Date</button>
+    <h1>Job Tracker</h1>
 
-    <script src="js/script.js"></script>
+    <div>
+        <input type="text" id="jobName" placeholder="Enter job name">
+        <select id="jobStatus">
+            <option value="Before Pics">Before Pics</option>
+            <option value="Quote">Quote</option>
+            <option value="Approval Needed">Approval Needed</option>
+            <option value="Completion Pics & Sign Off">Completion Pics & Sign Off</option>
+            <option value="Billing">Billing</option>
+        </select>
+        <button onclick="addJob()">Add Job</button>
+    </div>
+
+    <table id="jobsTable">
+        <thead>
+            <tr>
+                <th>Job Name</th>
+                <th>Status</th>
+                <th>Change Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Jobs will appear here -->
+        </tbody>
+    </table>
+
+    <script>
+        function addJob() {
+            const nameInput = document.getElementById('jobName');
+            const statusSelect = document.getElementById('jobStatus');
+
+            const jobName = nameInput.value.trim();
+            const jobStatus = statusSelect.value;
+
+            if (!jobName) {
+                alert("Please enter a job name.");
+                return;
+            }
+
+            const tableBody = document.getElementById('jobsTable').querySelector('tbody');
+
+            const row = document.createElement('tr');
+
+            const nameCell = document.createElement('td');
+            nameCell.textContent = jobName;
+
+            const statusCell = document.createElement('td');
+            statusCell.textContent = jobStatus;
+
+            const actionCell = document.createElement('td');
+            const statusDropdown = document.createElement('select');
+
+            const categories = ["Before Pics", "Quote", "Approval Needed", "Completion Pics & Sign Off", "Billing"];
+            categories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat;
+                option.textContent = cat;
+                if (cat === jobStatus) option.selected = true;
+                statusDropdown.appendChild(option);
+            });
+
+            statusDropdown.addEventListener('change', function() {
+                statusCell.textContent = this.value;
+            });
+
+            actionCell.appendChild(statusDropdown);
+
+            row.appendChild(nameCell);
+            row.appendChild(statusCell);
+            row.appendChild(actionCell);
+
+            tableBody.appendChild(row);
+
+            // Clear input
+            nameInput.value = '';
+            statusSelect.value = "Before Pics";
+        }
+    </script>
 </body>
 </html>
