@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Job Tracker by Category</title>
+<title>Job Tracker with Trash</title>
 <style>
     body { font-family: Arial, sans-serif; margin: 20px; }
     h1 { text-align: center; }
@@ -12,6 +12,8 @@
     th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
     th { background-color: #eee; }
     select, input[type=text], button { padding: 5px; margin-right: 5px; }
+    button.deleteBtn { background-color: #ff4d4d; color: white; border: none; cursor: pointer; }
+    button.deleteBtn:hover { background-color: #cc0000; }
 </style>
 </head>
 <body>
@@ -34,7 +36,7 @@
 <div class="category" id="Before Pics">
     <h2>Before Pics</h2>
     <table>
-        <thead><tr><th>Job Name</th><th>Change Status</th></tr></thead>
+        <thead><tr><th>Job Name</th><th>Change Status</th><th>Delete</th></tr></thead>
         <tbody></tbody>
     </table>
 </div>
@@ -42,7 +44,7 @@
 <div class="category" id="Quote">
     <h2>Quote</h2>
     <table>
-        <thead><tr><th>Job Name</th><th>Change Status</th></tr></thead>
+        <thead><tr><th>Job Name</th><th>Change Status</th><th>Delete</th></tr></thead>
         <tbody></tbody>
     </table>
 </div>
@@ -50,7 +52,7 @@
 <div class="category" id="Approval Needed">
     <h2>Approval Needed</h2>
     <table>
-        <thead><tr><th>Job Name</th><th>Change Status</th></tr></thead>
+        <thead><tr><th>Job Name</th><th>Change Status</th><th>Delete</th></tr></thead>
         <tbody></tbody>
     </table>
 </div>
@@ -58,7 +60,7 @@
 <div class="category" id="Completion Pics & Sign Off">
     <h2>Completion Pics & Sign Off</h2>
     <table>
-        <thead><tr><th>Job Name</th><th>Change Status</th></tr></thead>
+        <thead><tr><th>Job Name</th><th>Change Status</th><th>Delete</th></tr></thead>
         <tbody></tbody>
     </table>
 </div>
@@ -66,7 +68,7 @@
 <div class="category" id="Billing">
     <h2>Billing</h2>
     <table>
-        <thead><tr><th>Job Name</th><th>Change Status</th></tr></thead>
+        <thead><tr><th>Job Name</th><th>Change Status</th><th>Delete</th></tr></thead>
         <tbody></tbody>
     </table>
 </div>
@@ -88,9 +90,11 @@ function addJob() {
     const tableBody = document.querySelector(`#${CSS.escape(jobStatus)} tbody`);
     const row = document.createElement('tr');
 
+    // Job Name cell
     const nameCell = document.createElement('td');
     nameCell.textContent = jobName;
 
+    // Status change cell
     const actionCell = document.createElement('td');
     const statusDropdown = document.createElement('select');
 
@@ -103,18 +107,27 @@ function addJob() {
     });
 
     statusDropdown.addEventListener('change', function() {
-        // Remove from current category
+        // Move job to new category
         row.remove();
-        // Add to new category
         document.querySelector(`#${CSS.escape(this.value)} tbody`).appendChild(row);
     });
 
     actionCell.appendChild(statusDropdown);
 
+    // Delete button cell
+    const deleteCell = document.createElement('td');
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = "Delete";
+    deleteBtn.className = "deleteBtn";
+    deleteBtn.addEventListener('click', () => row.remove());
+    deleteCell.appendChild(deleteBtn);
+
     row.appendChild(nameCell);
     row.appendChild(actionCell);
+    row.appendChild(deleteCell);
     tableBody.appendChild(row);
 
+    // Clear input
     nameInput.value = '';
     statusSelect.value = "Before Pics";
 }
