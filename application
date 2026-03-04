@@ -1,100 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Job Tracker</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        h1 { text-align: center; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-        th { background-color: #f4f4f4; }
-        select, input[type=text] { padding: 5px; }
-        button { padding: 5px 10px; margin-left: 5px; }
-    </style>
+<meta charset="UTF-8">
+<title>Job Tracker by Category</title>
+<style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { text-align: center; }
+    .category { margin-top: 30px; }
+    .category h2 { background-color: #f4f4f4; padding: 5px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #eee; }
+    select, input[type=text], button { padding: 5px; margin-right: 5px; }
+</style>
 </head>
 <body>
-    <h1>Job Tracker</h1>
 
-    <div>
-        <input type="text" id="jobName" placeholder="Enter job name">
-        <select id="jobStatus">
-            <option value="Before Pics">Before Pics</option>
-            <option value="Quote">Quote</option>
-            <option value="Approval Needed">Approval Needed</option>
-            <option value="Completion Pics & Sign Off">Completion Pics & Sign Off</option>
-            <option value="Billing">Billing</option>
-        </select>
-        <button onclick="addJob()">Add Job</button>
-    </div>
+<h1>Job Tracker</h1>
 
-    <table id="jobsTable">
-        <thead>
-            <tr>
-                <th>Job Name</th>
-                <th>Status</th>
-                <th>Change Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Jobs will appear here -->
-        </tbody>
+<div>
+    <input type="text" id="jobName" placeholder="Enter job name">
+    <select id="jobStatus">
+        <option value="Before Pics">Before Pics</option>
+        <option value="Quote">Quote</option>
+        <option value="Approval Needed">Approval Needed</option>
+        <option value="Completion Pics & Sign Off">Completion Pics & Sign Off</option>
+        <option value="Billing">Billing</option>
+    </select>
+    <button onclick="addJob()">Add Job</button>
+</div>
+
+<!-- Category Sections -->
+<div class="category" id="Before Pics">
+    <h2>Before Pics</h2>
+    <table>
+        <thead><tr><th>Job Name</th><th>Change Status</th></tr></thead>
+        <tbody></tbody>
     </table>
+</div>
 
-    <script>
-        function addJob() {
-            const nameInput = document.getElementById('jobName');
-            const statusSelect = document.getElementById('jobStatus');
+<div class="category" id="Quote">
+    <h2>Quote</h2>
+    <table>
+        <thead><tr><th>Job Name</th><th>Change Status</th></tr></thead>
+        <tbody></tbody>
+    </table>
+</div>
 
-            const jobName = nameInput.value.trim();
-            const jobStatus = statusSelect.value;
+<div class="category" id="Approval Needed">
+    <h2>Approval Needed</h2>
+    <table>
+        <thead><tr><th>Job Name</th><th>Change Status</th></tr></thead>
+        <tbody></tbody>
+    </table>
+</div>
 
-            if (!jobName) {
-                alert("Please enter a job name.");
-                return;
-            }
+<div class="category" id="Completion Pics & Sign Off">
+    <h2>Completion Pics & Sign Off</h2>
+    <table>
+        <thead><tr><th>Job Name</th><th>Change Status</th></tr></thead>
+        <tbody></tbody>
+    </table>
+</div>
 
-            const tableBody = document.getElementById('jobsTable').querySelector('tbody');
+<div class="category" id="Billing">
+    <h2>Billing</h2>
+    <table>
+        <thead><tr><th>Job Name</th><th>Change Status</th></tr></thead>
+        <tbody></tbody>
+    </table>
+</div>
 
-            const row = document.createElement('tr');
+<script>
+const categories = ["Before Pics", "Quote", "Approval Needed", "Completion Pics & Sign Off", "Billing"];
 
-            const nameCell = document.createElement('td');
-            nameCell.textContent = jobName;
+function addJob() {
+    const nameInput = document.getElementById('jobName');
+    const statusSelect = document.getElementById('jobStatus');
+    const jobName = nameInput.value.trim();
+    const jobStatus = statusSelect.value;
 
-            const statusCell = document.createElement('td');
-            statusCell.textContent = jobStatus;
+    if (!jobName) {
+        alert("Please enter a job name.");
+        return;
+    }
 
-            const actionCell = document.createElement('td');
-            const statusDropdown = document.createElement('select');
+    const tableBody = document.querySelector(`#${CSS.escape(jobStatus)} tbody`);
+    const row = document.createElement('tr');
 
-            const categories = ["Before Pics", "Quote", "Approval Needed", "Completion Pics & Sign Off", "Billing"];
-            categories.forEach(cat => {
-                const option = document.createElement('option');
-                option.value = cat;
-                option.textContent = cat;
-                if (cat === jobStatus) option.selected = true;
-                statusDropdown.appendChild(option);
-            });
+    const nameCell = document.createElement('td');
+    nameCell.textContent = jobName;
 
-            statusDropdown.addEventListener('change', function() {
-                statusCell.textContent = this.value;
-            });
+    const actionCell = document.createElement('td');
+    const statusDropdown = document.createElement('select');
 
-            actionCell.appendChild(statusDropdown);
+    categories.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        if (cat === jobStatus) option.selected = true;
+        statusDropdown.appendChild(option);
+    });
 
-            row.appendChild(nameCell);
-            row.appendChild(statusCell);
-            row.appendChild(actionCell);
+    statusDropdown.addEventListener('change', function() {
+        // Remove from current category
+        row.remove();
+        // Add to new category
+        document.querySelector(`#${CSS.escape(this.value)} tbody`).appendChild(row);
+    });
 
-            tableBody.appendChild(row);
+    actionCell.appendChild(statusDropdown);
 
-            // Clear input
-            nameInput.value = '';
-            statusSelect.value = "Before Pics";
-        }
-    </script>
+    row.appendChild(nameCell);
+    row.appendChild(actionCell);
+    tableBody.appendChild(row);
+
+    nameInput.value = '';
+    statusSelect.value = "Before Pics";
+}
+</script>
+
 </body>
 </html>
